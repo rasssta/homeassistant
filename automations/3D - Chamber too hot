@@ -1,0 +1,29 @@
+- id: '<id>'
+  alias: 3D - Chamber too hot (CRITICAL)
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.temperature_3
+    above: '40'
+  condition:
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: sensor.temperature_3
+      state: unavailable
+  action:
+  - service: notify.notify_telegram
+    data:
+      message: '--- SHUTTING DOWN 3D PRINTER POWER OUTLET ! ! ! --- 3D chamber is
+        too hot: {{states(''sensor.temperature_3'')|int}}°'
+  - repeat:
+      sequence:
+      - data: {}
+        entity_id: switch.on_off_plug_3d
+        service: switch.turn_off
+      - delay: 00:00:01
+      until:
+      - condition: state
+        entity_id: switch.on_off_plug_3d
+        state: 'off'
+  mode: single

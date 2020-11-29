@@ -1,0 +1,18 @@
+- id: '<id>'
+  alias: Cooler too hot
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.temperature_21
+    above: '8'
+  condition:
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: sensor.temperature_21
+      state: unavailable
+  action:
+  - data:
+      message: 'Kylen hemma är för varm: {{states(''sensor.temperature_21'')|int}}°'
+    service: notify.notify_telegram
+  mode: single

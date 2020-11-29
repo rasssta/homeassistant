@@ -1,0 +1,14 @@
+- id: '<id>'
+  alias: Water Leak
+  trigger:
+  - entity_id: group.waterleak
+    from: 'off'
+    platform: state
+    to: 'on'
+  condition: []
+  action:
+    service: notify.notify_telegram
+    data:
+      message: "{% for entity in trigger.to_state.attributes.entity_id %}\n  {% if\
+        \ states(entity) == 'on' %}\n    {{ state_attr(entity, 'friendly_name') }}\
+        \ has detected a water leak!!!\n  {% endif %}\n{% endfor %}"

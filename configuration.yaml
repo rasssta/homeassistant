@@ -1,0 +1,181 @@
+homeassistant:
+
+# Enables the frontend
+frontend:
+  themes: !include_dir_merge_named themes
+
+mobile_app:
+
+ios:
+
+logger:
+  default: warning
+  logs:
+    homeassistant.helpers.script: debug
+
+# Enables configuration UI
+config:
+
+http:
+  ssl_certificate: /home/homeassistant/.homeassistant/ssl/<fqdn>.cert
+  ssl_key: /home/homeassistant/.homeassistant/ssl/fqdn>.key
+  server_port: 8123
+  login_attempts_threshold: 10
+
+# Checks for available updates
+# Note: This component will send some information about your system to
+# the developers to assist with development of Home Assistant.
+# For more information, please see:
+# https://home-assistant.io/blog/2016/10/25/explaining-the-updater/
+updater:
+  # Optional, allows Home Assistant developers to focus on popular components.
+  # include_used_components: true
+
+# Discover some devices automatically
+discovery:
+
+# Allows you to issue voice commands from the frontend in enabled browsers
+conversation:
+
+# Enables support for tracking state changes over time
+history:
+
+recorder:
+  # Delete events and states older than 2 weeks
+  purge_keep_days: 3 
+  auto_purge: true
+
+# View all events in a logbook
+logbook:
+
+# Enables a map showing the location of tracked devices
+map:
+
+# Track the sun
+sun:
+
+sensor:
+  - platform: krisinformation
+    name: "Krisinformation Stockholm"
+    county: "Stockholms län"
+    latitude: <lat>
+    longitude: <lng>
+    radius: 100
+  - platform: template
+    sensors:
+      unavailable_entities:
+        friendly_name: Unavailable Entities
+        unit_of_measurement: entities
+        icon_template: "{{ 'mdi:check-circle' if is_state('sensor.unavailable_entities','0') else 'mdi:alert-circle' }}"
+        value_template: >
+          {{ states|selectattr('state','in',['unavailable','unknown','none'])|rejectattr('domain','eq','group')
+            |rejectattr('entity_id','in',state_attr('group.ignored_entities','entity_id'))|list|count }}
+        attribute_templates:
+          entities: >
+            {{ states|selectattr('state','in',['unavailable','unknown','none'])|rejectattr('domain','eq','group')
+              |rejectattr('entity_id','in',state_attr('group.ignored_entities','entity_id'))|map(attribute='entity_id')|join(',') }}
+
+# Text to speech
+tts:
+  - platform: google_translate
+    service_name: google_say
+
+# Cloud
+#cloud:
+
+vacuum:
+  platform: xiaomi_miio
+  host: <ip>
+  token: <token>
+
+notify:
+        - name: NOTIFY_TELEGRAM
+          platform: telegram
+          chat_id: -<chat_id>
+
+telegram_bot:
+         - platform: polling
+           api_key: <apikey>
+           allowed_chat_ids:
+                   - -<chat_id>
+
+tesla:
+  username: <user>
+  password: <pass>
+  scan_interval: 660
+
+influxdb:
+  host: <ip>
+  database: <dbname>
+  username: <user>
+  password: <pass>
+
+homekit:
+  filter:
+    include_domains:
+      - climate
+      - input_boolean
+      - sensor
+      - switch
+      - light
+    exclude_entities:
+      - light.conbee
+      - binary_sensor.updater
+  name: Home Assistant Bridge
+
+input_boolean:
+  simrig:
+    name: Sim Rig
+
+system_health:
+
+wake_on_lan:
+
+switch:
+  - platform: wake_on_lan
+    name: "Sim Rig PC (On/Off)"
+    mac: <mac>
+    host: <ip>
+    turn_off:
+      service: shell_command.turn_off_simrigpc
+
+shell_command:
+  turn_off_simrigpc: '/usr/bin/net rpc shutdown -f -t 300 -I <ip> -U <user>%<pass>'
+
+weather:
+  - platform: darksky
+    api_key: <apikey>
+    latitude: <lat>
+    longitude: <lng>
+    units: si
+    mode: daily
+
+ffmpeg:
+  ffmpeg_bin: /usr/bin/ffmpeg
+
+camera:
+  - platform: uvc
+    nvr: <ip>
+    key: <key>
+  - platform: generic
+    name: Framsida
+    still_image_url: "http://<ip>:7080/api/2.0/snapshot/camera/<id>?force=true&apiKey=<apikey>"
+    stream_source: "rtsp://<ip>:7447/<id>"
+  - platform: ffmpeg
+    name: 3D Cam
+    input: "http://<fqdn>/webcam/?action=stream"
+
+sonos:
+  media_player:
+    hosts:
+      - <ip>
+
+octoprint:
+  host: <ip>
+  api_key: <apikey>
+  bed: true
+  number_of_tools: 1
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml

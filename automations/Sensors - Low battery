@@ -1,0 +1,38 @@
+- id: '<id>'
+  alias: Sensors - Low battery
+  description: ''
+  trigger:
+  - at: '19:50'
+    platform: time
+  condition:
+  - condition: template
+    value_template: "{% set domains = ['sensor'] %}\n\n{% set ns = namespace(min_batt=100,\
+      \ entities=[], found=false) %}\n{%- set exclude_sensors = ['sensor.tbq10322_battery_level']\
+      \ -%}\n{% for domain in domains %}\n  {% set ns.entities = states[domain] %}\n\
+      \  {% for sensor in exclude_sensors %}\n    {% set ns.entities = ns.entities\
+      \ | rejectattr('entity_id', 'equalto', sensor) %}\n  {% endfor %}\n  {% set\
+      \ batt_sensors = ns.entities | selectattr('attributes.device_class','equalto','battery')\
+      \ | map(attribute='state') | reject('equalto', 'unknown') | reject('equalto',\
+      \ 'None') | map('int') | reject('equalto', 0) | list %}\n  {% set batt_attrs\
+      \ = ns.entities | selectattr('attributes.battery_level','defined') | map(attribute='attributes.battery_level')\
+      \ | reject('equalto', 'unknown') | reject('equalto', 'None') | map('int') |\
+      \ reject('equalto', 0) | list %}\n  {% set batt_lvls = batt_sensors + batt_attrs\
+      \ %}\n  {% if batt_lvls|length > 0 %}\n    {% set _min = batt_lvls|min %}\n\
+      \    {% if _min < ns.min_batt %}\n      {% set ns.min_batt = _min %}\n    {%\
+      \ endif %}\n  {% endif %}\n{% endfor %}\n  {% if ns.min_batt < 40 -%}\n    {%\
+      \ set ns.found = true -%}\n  {% endif -%}\n{{ ns.found }}"
+  action:
+  - data_template:
+      message: " {%- set domains = ['sensor'] -%}\n{%- set threshold = 40 -%} {%-\
+        \ set exclude_entities = ['sensor.tbq10322_battery_level']\
+        \   -%} Sensors are below {{ threshold }}% battery: {%- for domain in domains\
+        \ -%} {%- for item in states[domain] -%} {%- if item.entity_id not in exclude_entities\
+        \ -%} {%- if item.attributes.battery_level is defined -%} {%- set level =\
+        \ item.attributes.battery_level|int -%} {% if level > 0 and level < threshold\
+        \ %} - {{ item.attributes.friendly_name }} ({{ item.attributes['battery_level']|int}}%)\
+        \ {%- endif -%} {%- endif -%} {%- if item.attributes.device_class is defined\
+        \ and item.attributes.device_class == 'battery' -%} {%- set level = item.state|int\
+        \ -%} {% if level > 0 and level <= threshold %}\n - {{ item.attributes.friendly_name\
+        \ }} ({{ item.state|int }}%) {%- endif -%} {%- endif %} {%- endif -%} {%-\
+        \ endfor -%} {%- endfor -%} "
+    service: notify.notify_telegram

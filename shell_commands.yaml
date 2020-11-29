@@ -1,0 +1,1 @@
+wol_off: '/usr/bin/net rpc shutdown -f -t 5 -I <ip> -U <user>:<pass>'

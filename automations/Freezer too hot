@@ -1,0 +1,18 @@
+- id: '<id>'
+  alias: Freezer too hot
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.temperature_23
+    above: '-10'
+  condition:
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: sensor.temperature_23
+      state: unavailable
+  action:
+  - data:
+      message: 'Frysen hemma är för varm: {{states(''sensor.temperature_23'')|int}}°'
+    service: notify.notify_telegram
+  mode: single

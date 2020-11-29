@@ -1,0 +1,32 @@
+- id: '<id>'
+  alias: 3D - Fan off
+  description: ''
+  trigger:
+  - entity_id: sensor.octoprint_current_state
+    from: Printing
+    platform: state
+  condition: []
+  action:
+  - delay: 00:05:00
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: sensor.octoprint_current_state
+      state: Printing
+  - data: {}
+    entity_id: switch.on_off_plug_3d_fan
+    service: switch.turn_off
+  mode: single
+- id: '<id>'
+  alias: 3D - Fan on
+  description: ''
+  trigger:
+  - entity_id: sensor.octoprint_current_state
+    platform: state
+    to: Printing
+  condition: []
+  action:
+  - data: {}
+    entity_id: switch.on_off_plug_3d_fan
+    service: switch.turn_on
+  mode: single

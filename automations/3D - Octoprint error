@@ -1,0 +1,13 @@
+- id: '1599325002699'
+  alias: 3D - Printing error
+  description: ''
+  trigger:
+  - entity_id: binary_sensor.octoprint_printing_error
+    from: 'off'
+    platform: state
+    to: 'on'
+  condition: []
+  action:
+  - data:
+      message: Octoprint has ran in to a problem!!!
+    service: notify.notify_telegram

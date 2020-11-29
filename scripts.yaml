@@ -1,0 +1,55 @@
+'1586600794144':
+  alias: Robban - Dammsug vardagsrum
+  sequence:
+  - data:
+      command: app_segment_clean
+      params:
+      - 20
+    entity_id: vacuum.xiaomi_vacuum_cleaner
+    service: vacuum.send_command
+'1586602230870':
+  alias: Robban - Dammsug kök
+  sequence:
+  - data:
+      command: app_segment_clean
+      params:
+      - 18
+    entity_id: vacuum.xiaomi_vacuum_cleaner
+    service: vacuum.send_command
+'1586602256846':
+  alias: Robban - Dammsug sovrum
+  sequence:
+  - data:
+      command: app_segment_clean
+      params:
+      - 16
+    entity_id: vacuum.xiaomi_vacuum_cleaner
+    service: vacuum.send_command
+'1586602293699':
+  alias: Robban - Dammsug kontor
+  sequence:
+  - data:
+      command: app_segment_clean
+      params:
+      - 17
+    entity_id: vacuum.xiaomi_vacuum_cleaner
+    service: vacuum.send_command
+'1586602320461':
+  alias: Robban - Dammsug hall
+  sequence:
+  - data:
+      command: app_segment_clean
+      params:
+      - 19
+    entity_id: vacuum.xiaomi_vacuum_cleaner
+    service: vacuum.send_command
+'1586607313578':
+  alias: Robban - Tömning
+  sequence:
+  - data:
+      command: app_goto_target
+      params:
+      - 26500
+      - 25750
+    entity_id: vacuum.xiaomi_vacuum_cleaner
+    service: vacuum.send_command

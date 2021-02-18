@@ -1,0 +1,193 @@
+  - title: LVP
+    path: lvp
+    panel: true
+    badges: []
+    cards:
+      - type: grid
+        columns: 3
+        square: false
+        cards:
+          - type: 'custom:apexcharts-card'
+            graph_span: 2d
+            update_interval: 1min
+            all_series_config:
+              stroke_width: 4
+            header:
+              show: true
+              show_states: true
+              colorize_states: true
+              title: Annex - Strömförbrukning
+            series:
+              - entity: sensor.energy_watt_lvp_annex
+                curve: smooth
+                type: line
+                group_by:
+                  duration: 1h
+                  func: avg
+                name: Current
+              - entity: sensor.energy_watt_lvp_annex
+                curve: smooth
+                type: line
+                stroke_width: 3
+                group_by:
+                  duration: 48h
+                  func: avg
+                name: 48h Average
+            apex_config:
+              legend:
+                show: true
+              chart:
+                height: 225
+          - type: 'custom:apexcharts-card'
+            graph_span: 2d
+            update_interval: 1min
+            all_series_config:
+              stroke_width: 4
+            header:
+              show: true
+              show_states: true
+              colorize_states: true
+              title: Storstugan - Strömförbrukning
+            series:
+              - entity: sensor.energy_watt_lvp_storstugan
+                curve: smooth
+                type: line
+                group_by:
+                  duration: 1h
+                  func: avg
+                name: Current
+              - entity: sensor.energy_watt_lvp_storstugan
+                curve: smooth
+                type: line
+                stroke_width: 3
+                group_by:
+                  duration: 48h
+                  func: avg
+                name: 48h Average
+            apex_config:
+              legend:
+                show: true
+              chart:
+                height: 225
+          - type: 'custom:apexcharts-card'
+            graph_span: 48h
+            update_interval: 1min
+            all_series_config:
+              stroke_width: 3
+            header:
+              show: true
+              show_states: true
+              colorize_states: true
+              title: Annex - Temp
+            series:
+              - entity: sensor.energy_watt_lvp_annex
+                curve: smooth
+                type: line
+                attribute: temperature
+                unit: C
+                name: LVP Read temperature
+              - entity: sensor.energy_watt_lvp_annex
+                curve: smooth
+                type: line
+                attribute: set_temperature
+                unit: C
+                name: LVP Set temperature
+              - entity: sensor.temperature_007_annex
+                curve: smooth
+                type: line
+            apex_config:
+              legend:
+                show: true
+              chart:
+                height: 225
+          - type: 'custom:apexcharts-card'
+            graph_span: 6d
+            span:
+              end: day
+            update_interval: 1min
+            all_series_config:
+              stroke_width: 4
+            stacked: true
+            header:
+              show: true
+              show_states: true
+              colorize_states: true
+              title: Strömförbrukning per dag
+            series:
+              - entity: sensor.energy_wh_lvp_annex_daily
+                name: Annex
+                curve: smooth
+                type: column
+                transform: return x / 1000;
+                unit: kWh
+                group_by:
+                  duration: 24h
+                  func: last
+              - entity: sensor.energy_wh_lvp_storstugan_daily
+                name: Storstugan
+                curve: smooth
+                type: column
+                transform: return x / 1000;
+                unit: kWh
+                group_by:
+                  duration: 24h
+                  func: last
+                show:
+                  datalabels: total
+            apex_config:
+              yaxis:
+                min: 0
+              legend:
+                show: true
+              chart:
+                height: 225
+          - type: 'custom:apexcharts-card'
+            graph_span: 48h
+            update_interval: 1min
+            all_series_config:
+              stroke_width: 3
+            header:
+              show: true
+              show_states: true
+              colorize_states: true
+              title: Utomhus - Temp
+            series:
+              - entity: sensor.temperature_011_utomhus
+                curve: smooth
+                type: line
+            apex_config:
+              legend:
+                show: true
+              chart:
+                height: 225
+          - type: 'custom:apexcharts-card'
+            graph_span: 48h
+            update_interval: 1min
+            all_series_config:
+              stroke_width: 3
+            header:
+              show: true
+              show_states: true
+              colorize_states: true
+              title: Storstugan - Temp
+            series:
+              - entity: sensor.energy_watt_lvp_storstugan
+                curve: smooth
+                type: line
+                attribute: temperature
+                unit: C
+                name: LVP Read temperature
+              - entity: sensor.energy_watt_lvp_storstugan
+                curve: smooth
+                type: line
+                attribute: set_temperature
+                unit: C
+                name: LVP Set temperature
+              - entity: sensor.temperature_001_vardagsrum
+                curve: smooth
+                type: line
+            apex_config:
+              legend:
+                show: true
+              chart:
+                height: 225
